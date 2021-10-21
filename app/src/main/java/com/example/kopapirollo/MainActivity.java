@@ -13,11 +13,10 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button Ko, Papir, Ollo;
-    private ImageView Gep_kep, Felh_kep;
-    private TextView Win, Lose;
-    private int wincount, losecount, drawcount;
-    private int felhtipp, geptipp;
-    private Toast toast;
+    private ImageView Gep_kep, Felh_kep, gepsziv1, gepsziv2, gepsziv3, felhsziv1, felhsziv2, felhsziv3;
+    private ImageView[] gepszivek, felhszivek;
+    private TextView draws;
+    private int wincount, losecount, drawcount, felhtipp, geptipp;
     private AlertDialog dialog;
 
     @Override
@@ -32,23 +31,22 @@ public class MainActivity extends AppCompatActivity {
                 sorsol();
                 kiNyert();
             }
-
         });
         Papir.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Felh_kep.setImageResource(R.drawable.paper);
-                felhtipp = 1;sorsol();
+                felhtipp = 1;
+                sorsol();
                 kiNyert();
             }
-
         });
         Ollo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Felh_kep.setImageResource(R.drawable.scissors);
-                felhtipp = 2;sorsol();
+                felhtipp = 2;
+                sorsol();
                 kiNyert();
             }
-
         });
 
 
@@ -59,54 +57,62 @@ public class MainActivity extends AppCompatActivity {
         Ollo = findViewById(R.id.ollo);
         Gep_kep = findViewById(R.id.gep_kep);
         Felh_kep = findViewById(R.id.felh_kep);
-        Win = findViewById(R.id.win);
-        Lose = findViewById(R.id.lose);
+        gepsziv1 = findViewById(R.id.gepsziv1);
+        gepsziv2 = findViewById(R.id.gepsziv2);
+        gepsziv3 = findViewById(R.id.gepsziv3);
+        felhsziv1 = findViewById(R.id.felhsziv1);
+        felhsziv2 = findViewById(R.id.felhsziv2);
+        felhsziv3 = findViewById(R.id.felhsziv3);
+        draws = findViewById(R.id.drawlabel);
+        gepszivek = new ImageView[]{gepsziv3,gepsziv2,gepsziv1};
+        felhszivek = new ImageView[]{felhsziv3,felhsziv2,felhsziv1};
         wincount = 0;
         losecount = 0;
         drawcount = 0;
-        toast = new Toast(getApplicationContext());
+
     }
 
     public void sorsol(){
         geptipp = (int)(Math.random()*3);
         switch (geptipp){
             case 0: Gep_kep.setImageResource(R.drawable.rock); break;
-            case 1: Gep_kep.setImageResource(R.drawable.paper);break;
-            case 2: Gep_kep.setImageResource(R.drawable.scissors);break;
+            case 1: Gep_kep.setImageResource(R.drawable.paper); break;
+            case 2: Gep_kep.setImageResource(R.drawable.scissors); break;
             default:break;
         }
     }
     public void kiNyert(){
 
         if (geptipp == 0 && felhtipp == 1){
+            gepszivek[wincount].setImageResource(R.drawable.heart1);
             wincount++;
-            Win.setText(String.format("%d", wincount));
             Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (geptipp == 1 && felhtipp == 2){
+            gepszivek[wincount].setImageResource(R.drawable.heart1);
             wincount++;
-            Win.setText(String.format("%d", wincount));
             Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (geptipp == 2 && felhtipp == 0){
+            gepszivek[wincount].setImageResource(R.drawable.heart1);
             wincount++;
-            Win.setText(String.format("%d", wincount));
             Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 0 && geptipp == 1){
+            felhszivek[losecount].setImageResource(R.drawable.heart1);
             losecount++;
-            Lose.setText(String.format("%d", losecount));
             Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 1 && geptipp == 2){
+            felhszivek[losecount].setImageResource(R.drawable.heart1);
             losecount++;
-            Lose.setText(String.format("%d", losecount));
             Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 2 && geptipp == 0){
+            felhszivek[losecount].setImageResource(R.drawable.heart1);
             losecount++;
-            Lose.setText(String.format("%d", losecount));
             Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else{
             drawcount++;
+            draws.setText(String.format("Döntetlenek száma: %d", drawcount));
+            Toast.makeText(this, "Döntetlen", Toast.LENGTH_SHORT).show();
         }
         if (wincount == 3 || losecount == 3){
-            //finish();
             AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
             if (wincount == 3) b.setTitle("Győzelem");
             else b.setTitle("Vereség");
@@ -117,10 +123,13 @@ public class MainActivity extends AppCompatActivity {
                     wincount = 0;
                     losecount = 0;
                     drawcount = 0;
-                    Lose.setText("0");
-                    Win.setText("0");
-                    /*finish();
-                    startActivity(getIntent());*/
+                    draws.setText(String.format("Döntetlenek száma: %d", drawcount));
+                    for (ImageView v:gepszivek) {
+                        v.setImageResource(R.drawable.heart2);
+                    }
+                    for (ImageView v:felhszivek) {
+                        v.setImageResource(R.drawable.heart2);
+                    }
                 }
             });
             b.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -130,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             b.setCancelable(false);
-            AlertDialog dialog = b.create();
+            dialog = b.create();
             dialog.show();
         }
     }
