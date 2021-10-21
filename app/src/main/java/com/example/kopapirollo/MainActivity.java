@@ -1,8 +1,9 @@
 package com.example.kopapirollo;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         Ko.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Felh_kep.setImageResource(R.drawable.rock);
-                felhtipp = 0;sorsol();
+                felhtipp = 0;
+                sorsol();
                 kiNyert();
             }
 
@@ -63,15 +65,10 @@ public class MainActivity extends AppCompatActivity {
         losecount = 0;
         drawcount = 0;
         toast = new Toast(getApplicationContext());
-
-    }
-
-    public void createToast() {
-        toast.setText("");
     }
 
     public void sorsol(){
-        geptipp = (int)(Math.random()*2);
+        geptipp = (int)(Math.random()*3);
         switch (geptipp){
             case 0: Gep_kep.setImageResource(R.drawable.rock); break;
             case 1: Gep_kep.setImageResource(R.drawable.paper);break;
@@ -80,29 +77,61 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void kiNyert(){
+
         if (geptipp == 0 && felhtipp == 1){
             wincount++;
-            Win.setText(wincount);
+            Win.setText(String.format("%d", wincount));
+            Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (geptipp == 1 && felhtipp == 2){
             wincount++;
-            Win.setText(wincount);
-
+            Win.setText(String.format("%d", wincount));
+            Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (geptipp == 2 && felhtipp == 0){
-            wincount++;            Win.setText(wincount);
-
-
+            wincount++;
+            Win.setText(String.format("%d", wincount));
+            Toast.makeText(this, "Győzelem", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 0 && geptipp == 1){
-            losecount++;            Lose.setText(losecount);
-
+            losecount++;
+            Lose.setText(String.format("%d", losecount));
+            Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 1 && geptipp == 2){
-            losecount++;            Lose.setText(losecount);
-
+            losecount++;
+            Lose.setText(String.format("%d", losecount));
+            Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else if (felhtipp == 2 && geptipp == 0){
-            losecount++;            Lose.setText(losecount);
-
+            losecount++;
+            Lose.setText(String.format("%d", losecount));
+            Toast.makeText(this, "Vereség", Toast.LENGTH_SHORT).show();
         }else{
             drawcount++;
         }
-
+        if (wincount == 3 || losecount == 3){
+            //finish();
+            AlertDialog.Builder b = new AlertDialog.Builder(MainActivity.this);
+            if (wincount == 3) b.setTitle("Győzelem");
+            else b.setTitle("Vereség");
+            b.setMessage("Vége a játéknak. Szeretne új játékot kezdeni?");
+            b.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    wincount = 0;
+                    losecount = 0;
+                    drawcount = 0;
+                    Lose.setText("0");
+                    Win.setText("0");
+                    /*finish();
+                    startActivity(getIntent());*/
+                }
+            });
+            b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finishAffinity();
+                }
+            });
+            b.setCancelable(false);
+            AlertDialog dialog = b.create();
+            dialog.show();
+        }
     }
 }
